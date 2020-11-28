@@ -2,7 +2,7 @@
     +Entities()                 //inicializa una lista
     ~Entities()                 //destructor
     
-    +addEntity(int entity)      // 0 Hole, 1 Coin, 2 Little Goomba, 3 Koopa Troopa, 4 Empty
+    +addEntity(int entity)      // 0 Hole, 1 Coisaaan, 2 Little Goomba, 3 Koopa Troopa, 4 Empty
     +removeEntity(int entity)   // 2 Little Goomba, 3 Koopa Troopa,
 
 1. World
@@ -24,6 +24,10 @@
     char strategy;  //R L M A
 
     chooseAction(actionLists); // choose action based Prob
-    
+
+3. Probability
+
+    0.05 de pasar
+
 
 	

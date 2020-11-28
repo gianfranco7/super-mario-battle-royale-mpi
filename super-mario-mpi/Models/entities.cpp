@@ -1,38 +1,45 @@
 #include <list>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 class Entities
 {
-    list <string> entities;      
-    list <string>::iterator it;
+    list<string> entities;
+    list<string>::iterator it;
 
-    public:
-        Entities()
+public:
+    Entities()
+    {
+        it = entities.begin();
+    }
+
+    ~Entities()
+    {
+        entities.clear();
+    }
+
+    void addEntity(string entity)
+    {
+        entities.insert(it, entity);
+    }
+
+    list<string> getEntities()
+    {
+        return entities;
+    }
+
+    void removeEntity(string entity)
+    {
+        list<string>::iterator it = find(entities.begin(), entities.end(), entity);
+        entities.erase(it);
+    }
+
+    void printEntities()
+    {
+        list<string>::iterator it;
+        for (it = entities.begin(); it != entities.end(); ++it)
         {
-            it = entities.begin();
         }
-
-        /*~Entities()
-        {
-            for(it = entities.begin(); it != entities.end(); ++it)
-            {
-                entities.erase(it);
-            }
-        }*/
-
-        void addEntity(string entity)
-        {
-            entities.insert(it,entity);
-        }
-
-        list <string> getEntities()
-        {
-            return entities;
-        }
-
-        void removeEntity(string entity)
-        {
-
-        }
+    }
 };
