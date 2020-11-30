@@ -1,7 +1,6 @@
 #include <list>
 #include <iostream>
 #include <algorithm>
-
 using namespace std;
 class Entities
 {
@@ -33,13 +32,5 @@ public:
     {
         list<string>::iterator it = find(entities.begin(), entities.end(), entity);
         entities.erase(it);
-    }
-
-    void printEntities()
-    {
-        list<string>::iterator it;
-        for (it = entities.begin(); it != entities.end(); ++it)
-        {
-        }
     }
 };

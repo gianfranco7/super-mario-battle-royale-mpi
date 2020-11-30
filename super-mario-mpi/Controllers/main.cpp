@@ -2,9 +2,7 @@
 
 int main()
 {
-	World world;
 	Mario mario;
-
-
+	mario.checkWorldBlock(11);
     return 0;
 }
