@@ -3,6 +3,9 @@
 int main()
 {
 	Mario mario;
-	mario.checkWorldBlock(11);
-    return 0;
+	cout << "Coin " << mario.getCoinEncounterOutcome() << endl;
+	cout << "Hole " << mario.getHoleEncounterOutcome() << endl;
+	cout << "Goomba " << mario.getLittleGoombaEncounterOutcome() << endl;
+	cout << "KoopaTroopa " << mario.getKoopaTroopaEncounterOutcome() << endl;
+	return 0;
 }

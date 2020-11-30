@@ -73,16 +73,10 @@ public:
     list<string> getWorldBlock(int position)
     {
         list<string> entities = world.getBlockElements(position);
-        /*list<string>::iterator it;
-        cout << "Entites on block # " << position << ": ";
-        for (it = entities.begin(); it != entities.end(); ++it)
-        {
-            cout << *it << " ";
-        }
-        cout << endl;*/
         return entities;
     }
 
+    //gets a multimap of the event outcome <outcome code, entity> 
     multimap<int, string> getEncounterOutcomes(list<string> blockEntities)
     {
         multimap<int, string> outcomes;
@@ -90,32 +84,81 @@ public:
         for(it = blockEntities.begin(); it != blockEntities.end(); ++it)
         {   
             string entity = *it;
+            int outcome = -1;
             if(entity == "Coin")
             {
-                int outcome = -1;
                 outcome = getCoinEncounterOutcome();
                 outcomes.insert(pair <int,string> (outcome, entity));
             }
             if(entity == "Hole")
             {
-                int outcome = -1;
                 outcome = getHoleEncounterOutcome();
                 outcomes.insert(pair <int,string> (outcome, entity));
             }
             if(entity == "Little Goomba")
             {
-                int outcome = -1;
                 outcome = getLittleGoombaEncounterOutcome();
                 outcomes.insert(pair <int,string> (outcome, entity));
             }
             if(entity == "Koopa Troopa")
             {
-                int outcome = -1;
                 outcome = getKoopaTroopaEncounterOutcome();
                 outcomes.insert(pair <int,string> (outcome, entity));
             }
         }
         return outcomes;
+    }
+
+    void setEncounterResults(multimap<int,string> outcomes)
+    {
+        multimap <int, string> :: iterator it;
+        for(it = outcomes.begin(); it != outcomes.end(); ++it)
+        {
+            if(it->second == "Coin")
+            {
+                switch (it->first)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                }
+            }
+            if(it->second == "Hole")
+            {
+                switch (it->first)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                }
+            }
+            if(it->second == "Little Goomba")
+            {
+                switch (it->first)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                }
+            }
+            if(it->second == "Koopa Troopa")
+            {
+                switch (it->first)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                }
+            }
+        }
     }
 
     void travelWorld()
@@ -132,7 +175,7 @@ public:
                 location++;
             }else
             {
-                getEncounterOutcomes(getWorldBlock(i));
+                setEncounterResults(getEncounterOutcomes(getWorldBlock(i)));
             }
         }
     }
