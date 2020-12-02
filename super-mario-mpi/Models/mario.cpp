@@ -119,8 +119,13 @@ public:
                 switch (it->first)
                 {
                     case 0:
+                    ++location;
+                    cout << "Mario # " << id << " is walking.";
                         break;
                     case 1:
+                    ++location;
+                    ++coins;
+                    cout << "Mario # " << id << " jumped and grabbed a coin.";
                         break;
                 }
             }
@@ -129,8 +134,12 @@ public:
                 switch (it->first)
                 {
                     case 0:
+                    isActive = false;
+                    cout << "Mario #" << id << " didn't jump and fell to his death.";
                         break;
                     case 1:
+                    ++location;
+                    cout << "Mario #" << id << " jumped and kept walking.";
                         break;
                 }
             }
@@ -139,10 +148,16 @@ public:
                 switch (it->first)
                 {
                     case 0:
+                    isActive = false;
+                    cout << "Mario #" << id << " didn't jump and was killed by a little goomba.";
                         break;
                     case 1:
+                    ++location;
+                    cout << "Mario #" << id << " jumped and avoided the little goomba";
                         break;
                     case 2:
+                    ++location;
+                    cout << "Mario #" << id << " jumped and killed the little goomba.";
                         break;
                 }
             }
@@ -151,10 +166,16 @@ public:
                 switch (it->first)
                 {
                     case 0:
+                    isActive = false;
+                    cout << "Mario #" << id << " didn't jump and was killed by a koopa troopa";
                         break;
                     case 1:
+                    ++location;
+                    cout << "Mario #" << id << " jumped and avoided the koopa troopa";
                         break;
                     case 2:
+                    ++location;
+                    cout << "Mario #" << id << " jumped and killed the koopa troopa.";
                         break;
                 }
             }
