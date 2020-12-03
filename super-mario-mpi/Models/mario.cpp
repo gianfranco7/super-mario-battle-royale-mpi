@@ -76,107 +76,140 @@ public:
         return entities;
     }
 
-    //gets a multimap of the event outcome <outcome code, entity> 
+    //gets a multimap of the event outcome <outcome code, entity>
     multimap<int, string> getEncounterOutcomes(list<string> blockEntities)
     {
         multimap<int, string> outcomes;
         list<string>::iterator it;
-        for(it = blockEntities.begin(); it != blockEntities.end(); ++it)
-        {   
+        for (it = blockEntities.begin(); it != blockEntities.end(); ++it)
+        {
             string entity = *it;
             int outcome = -1;
-            if(entity == "Coin")
+            if (entity == "Coin")
             {
                 outcome = getCoinEncounterOutcome();
-                outcomes.insert(pair <int,string> (outcome, entity));
+                outcomes.insert(pair<int, string>(outcome, entity));
             }
-            if(entity == "Hole")
+            if (entity == "Hole")
             {
                 outcome = getHoleEncounterOutcome();
-                outcomes.insert(pair <int,string> (outcome, entity));
+                outcomes.insert(pair<int, string>(outcome, entity));
             }
-            if(entity == "Little Goomba")
+            if (entity == "Little Goomba")
             {
                 outcome = getLittleGoombaEncounterOutcome();
-                outcomes.insert(pair <int,string> (outcome, entity));
+                outcomes.insert(pair<int, string>(outcome, entity));
             }
-            if(entity == "Koopa Troopa")
+            if (entity == "Koopa Troopa")
             {
                 outcome = getKoopaTroopaEncounterOutcome();
-                outcomes.insert(pair <int,string> (outcome, entity));
+                outcomes.insert(pair<int, string>(outcome, entity));
             }
         }
         return outcomes;
     }
 
-    void setEncounterResults(multimap<int,string> outcomes)
+    void setEncounterResults(multimap<int, string> outcomes)
     {
-        multimap <int, string> :: iterator it;
-        for(it = outcomes.begin(); it != outcomes.end(); ++it)
+        multimap<int, string>::iterator it;
+        for (it = outcomes.begin(); it != outcomes.end(); ++it)
         {
-            if(it->second == "Coin")
+            if (it->second == "Coin")
             {
                 switch (it->first)
                 {
-                    case 0:
+                case 0:
+                    cout << "World pos. " << location << ": ";
                     ++location;
-                    cout << "Mario # " << id << " is walking.";
-                        break;
-                    case 1:
+                    cout << "Mario #" << id << " is walking. ";
+                    cout << "Coins: " << coins;
+                    cout << " |";
+                    cout << endl;
+                    break;
+                case 1:
+                    cout << "World pos. " << location << ": ";
                     ++location;
                     ++coins;
-                    cout << "Mario # " << id << " jumped and grabbed a coin.";
-                        break;
+                    cout << "Mario #" << id << " jumped and grabbed a coin. ";
+                    cout << "Coins: " << coins;
+                    cout << " |";
+                    cout << endl;
+                    break;
                 }
             }
-            if(it->second == "Hole")
+            if (it->second == "Hole")
             {
                 switch (it->first)
                 {
-                    case 0:
+                case 0:
+                    cout << "World pos. " << location << ": ";
                     isActive = false;
-                    cout << "Mario #" << id << " didn't jump and fell to his death.";
-                        break;
-                    case 1:
+                    cout << "Mario #" << id << " didn't jump and fell to his death. " << endl;
+                    break;
+                case 1:
+                    cout << "World pos. " << location << ": ";
                     ++location;
-                    cout << "Mario #" << id << " jumped and kept walking.";
-                        break;
+                    cout << "Mario #" << id << " jumped and kept walking. ";
+                    cout << "Coins: " << coins;
+                    cout << " |";
+                    cout << endl;
+                    break;
                 }
             }
-            if(it->second == "Little Goomba")
+            if (it->second == "Little Goomba")
             {
                 switch (it->first)
                 {
-                    case 0:
+                case 0:
                     isActive = false;
-                    cout << "Mario #" << id << " didn't jump and was killed by a little goomba.";
-                        break;
-                    case 1:
+                    cout << "World pos. " << location << ": ";
+                    cout << "Mario #" << id << " didn't jump and was killed by a little goomba. " << endl;
+                    break;
+                case 1:
+                    cout << "World pos. " << location << ": ";
                     ++location;
-                    cout << "Mario #" << id << " jumped and avoided the little goomba";
-                        break;
-                    case 2:
+                    cout << "Mario #" << id << " jumped and avoided the little goomba. ";
+                    cout << "Coins: " << coins;
+                    cout << " |";
+                    cout << endl;
+                    break;
+                case 2:
+                    cout << "World pos. " << location << ": ";
+                    world.removeBlockEement(location, "Little Goomba");
                     ++location;
-                    cout << "Mario #" << id << " jumped and killed the little goomba.";
-                        break;
+                    cout << "Mario #" << id << " jumped and killed the little goomba. ";
+                    cout << "Coins: " << coins;
+                    cout << " |";
+                    cout << endl;
+                    break;
                 }
             }
-            if(it->second == "Koopa Troopa")
+            if (it->second == "Koopa Troopa")
             {
                 switch (it->first)
                 {
-                    case 0:
+                case 0:
                     isActive = false;
-                    cout << "Mario #" << id << " didn't jump and was killed by a koopa troopa";
-                        break;
-                    case 1:
+                    cout << "World pos. " << location << ": ";
+                    cout << "Mario #" << id << " didn't jump and was killed by a koopa troopa. " << endl;
+                    break;
+                case 1:
                     ++location;
-                    cout << "Mario #" << id << " jumped and avoided the koopa troopa";
-                        break;
-                    case 2:
+                    cout << "World pos. " << location << ": ";
+                    cout << "Mario #" << id << " jumped and avoided the koopa troopa. ";
+                    cout << "Coins: " << coins;
+                    cout << " |";
+                    cout << endl;
+                    break;
+                case 2:
+                    world.removeBlockEement(location, "Koopa Troopa");
                     ++location;
-                    cout << "Mario #" << id << " jumped and killed the koopa troopa.";
-                        break;
+                    cout << "World pos. " << location << ": ";
+                    cout << "Mario #" << id << " jumped and killed the koopa troopa. ";
+                    cout << "Coins: " << coins;
+                    cout << " |";
+                    cout << endl;
+                    break;
                 }
             }
         }
@@ -184,20 +217,29 @@ public:
 
     void travelWorld()
     {
-        for (int i = 0; i < WORLD_SIZE; ++i)
+        while ((location != WORLD_SIZE && isActive == true) && location != 99)
         {
-            if (getWorldBlock(i).empty())
+            if (getWorldBlock(location).empty())
             {
                 cout << "World pos. " << location << ": ";
-                cout << "Mario #" << id << " is walking ";
+                cout << "Mario #" << id << " is walking. ";
                 cout << "Coins: " << coins;
                 cout << " |";
                 cout << endl;
                 location++;
-            }else
-            {
-                setEncounterResults(getEncounterOutcomes(getWorldBlock(i)));
             }
+            else
+            {
+                setEncounterResults(getEncounterOutcomes(getWorldBlock(location)));
+            }
+        }
+        if (isActive == true)
+        {
+            cout << "World pos. " << location << ": ";
+            cout << "Mario #" << id << " made it to the flag and won the game! Congratulations! ";
+            cout << "Total Coins: " << coins;
+            cout << " |";
+            cout << endl;
         }
     }
 
@@ -222,13 +264,13 @@ public:
 
     int getCoinEncounterOutcome()
     {
-        vector<double>probabilities = {0.5,0.5};
+        vector<double> probabilities = {0.5, 0.5};
         return calculateEncounterResult(probabilities);
     }
 
     int getHoleEncounterOutcome()
     {
-        vector<double>probabilities = {0.05,0.95};
+        vector<double> probabilities = {0.05, 0.95};
         return calculateEncounterResult(probabilities);
     }
 
