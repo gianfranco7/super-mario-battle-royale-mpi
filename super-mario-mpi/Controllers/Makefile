@@ -1,2 +1,2 @@
 compile: main.cpp
-	g++ -Wall -o super-mario-mpi main.cpp
+	mpic++ main.cpp -o super-mario-mpi 
