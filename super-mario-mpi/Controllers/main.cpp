@@ -13,7 +13,9 @@ bool validate_entry(int chosen_id)
 
 int main(int argc, char *argv[])
 {
-	int my_id, num_processes, chosen_id;
+	int myID, numProcesses, chosen_id;
+	int leastCoinsID = 0;
+	int mostCoinsID = 0;
 	char strategy;
 	if (argc == 3)
 	{
@@ -35,17 +37,35 @@ int main(int argc, char *argv[])
 	}
 	MPI_Status status;
 	MPI_Init(&argc, &argv);
-	MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
-	MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
-	if (my_id == chosen_id)
+	MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
+	MPI_Comm_rank(MPI_COMM_WORLD, &myID);
+	if (myID == chosen_id)
 	{
-		Mario chosen_mario(my_id, chosen_id, strategy);
-		chosen_mario.travelWorld();
+		Mario chosen_mario(myID, chosen_id, strategy, numProcesses);
+		while (chosen_mario.getIsActive())
+		{
+			int currentCoins = chosen_mario.getCoins();
+			chosen_mario.travelWorld();
+			chosen_mario.setLocation(0);
+			MPI_Reduce(&currentCoins, &leastCoinsID, 1, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
+			chosen_mario.setLeastCoinsID(leastCoinsID);
+			MPI_Reduce(&currentCoins, &mostCoinsID, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
+			chosen_mario.setMostCoinsID(mostCoinsID);
+		}
 	}
 	else
 	{
-		Mario mario(my_id, chosen_id);
-		mario.travelWorld();
+		Mario mario(myID, chosen_id, numProcesses);
+		while(mario.getIsActive())
+		{
+			int currentCoins = mario.getCoins();
+			mario.travelWorld();
+			mario.setLocation(0);
+			MPI_Reduce(&currentCoins, &leastCoinsID, 1, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
+			mario.setLeastCoinsID(leastCoinsID);
+			MPI_Reduce(&currentCoins, &mostCoinsID, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
+			mario.setMostCoinsID(mostCoinsID);
+		}
 	}
 	MPI_Finalize();
 	return 0;
