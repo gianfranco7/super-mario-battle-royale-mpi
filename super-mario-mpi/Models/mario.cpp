@@ -3,29 +3,109 @@
 #include <map>
 #include "../Models/world.cpp"
 using namespace std;
+//Class that simulates a player that the user can take control of or not
 
 class Mario
 {
     int id;
+    int chosenid;
+    int attackingId;
+    int attackerId;
+    int mostCoinsId;
+    int leastCoinsId;
     int location;
     int coins;
+    int totalPlaying;
     bool isActive;
     char strategy;
+    string attack;
     World world;
 
 public:
-    Mario()
+    Mario(int playerid, int chosenId, int totalPlayers)
     {
-        id = 0;
+        id = playerid;
         location = 0;
+        chosenid = chosenId;
         coins = 0;
+        attackingId = 0;
+        attackerId = 0;
         isActive = true;
         strategy = getStrategy();
+        totalPlaying = totalPlayers;
+        attack = " ";
+    }
+
+    Mario(int playerid, int chosenId, char chosen_strategy, int totalPlayers)
+    {
+        id = playerid;
+        chosenid = chosenId;
+        location = 0;
+        coins = 0;
+        attackingId = 0;
+        attackerId = 0;
+        isActive = true;
+        strategy = chosen_strategy;
+        totalPlaying = totalPlayers;
+        attack = " ";
+    }
+
+    void setTarget()
+    {
+        if (strategy == 'R')
+        {
+            attackingId = getRandomTarget();
+        }
+        if (strategy == 'L')
+        {
+            //ATAQUE AL QUE TIENE MENOS MONEDAS
+            attackingId = leastCoinsId;
+        }
+        if (strategy == 'M')
+        {
+            //ATAQUE AL QUE TIENE MAS MONEDAS
+            attackingId = mostCoinsId;
+        }
+        if (strategy == 'A')
+        {
+            //ATAQUE A ATACANTE O RANDOM
+            attackingId = getRandomTarget();
+        }
+    }
+
+    string getAttack()
+    {
+        return attack;
+    }
+
+    int getID()
+    {
+        return id;
+    }
+
+    int getAttackingId()
+    {
+        return attackingId;
+    }
+
+    void setMostCoinsID(int id)
+    {
+        mostCoinsId = id;
+    }
+
+    void setLeastCoinsID(int id)
+    {
+        leastCoinsId = id;
     }
 
     int getLocation()
     {
         return location;
+    }
+
+    void setLocation(int newLocation)
+    {
+        location = newLocation;
     }
 
     int getCoins()
@@ -41,11 +121,6 @@ public:
     void setIsActive(bool active)
     {
         isActive = active;
-    }
-
-    void addCoin()
-    {
-        ++coins;
     }
 
     int generateRandomInt(int lowerLimit, int upperLimit)
@@ -70,6 +145,66 @@ public:
         }
     }
 
+    int getRandomTarget()
+    {
+        return generateRandomInt(0, totalPlaying);
+    }
+
+    void printAttacker()
+    {
+        cout << " being attacked by #" << attackerId;
+    }
+
+    void printAttacking()
+    {
+        cout << "atacking #" << attackingId;
+    }
+
+    void printDivisor()
+    {
+        cout << " | ";
+    }
+
+    void printStrategy()
+    {
+        cout << " attack strategy: ";
+        if (strategy == 'R')
+        {
+            cout << "RANDOM ";
+        }
+        if (strategy == 'L')
+        {
+            cout << "LESS COINS ";
+        }
+        if (strategy == 'M')
+        {
+            cout << "MORE COINS ";
+        }
+        if (strategy == 'A')
+        {
+            cout << "ATTACKER ";
+        }
+    }
+
+    void printTotalPlayers()
+    {
+        cout << "Total playing: " << totalPlaying << endl;
+    }
+
+    //Prints all info in requested format
+    void printInfo()
+    {
+        printDivisor();
+        printAttacking();
+        printDivisor();
+        printAttacker();
+        printDivisor();
+        printStrategy();
+        printDivisor();
+        printTotalPlayers();
+    }
+
+    //Gets entities in a world block
     list<string> getWorldBlock(int position)
     {
         list<string> entities = world.getBlockElements(position);
@@ -109,145 +244,180 @@ public:
         return outcomes;
     }
 
+    //recieves attack entity and adds it to world in location+10 as per requirements
+    void recieveAttack(string attack)
+    {
+        if (attack == "Little Goomba")
+        {
+            world.addBlockElement(location + 10, attack);
+        }
+        if (attack == "Koopa Troopa")
+        {
+            world.addBlockElement(location + 10, attack);
+        }
+    }
+
+    //sets attack to send
+    string setAttack(string sentAttack)
+    {
+        attack = sentAttack;
+    }
+
+    //iterates through outcomes multimap and sets the results in the world and the player
     void setEncounterResults(multimap<int, string> outcomes)
     {
         multimap<int, string>::iterator it;
         for (it = outcomes.begin(); it != outcomes.end(); ++it)
         {
-            if (it->second == "Coin")
+            if (isActive)
             {
-                switch (it->first)
+                if (it->second == "Coin")
                 {
-                case 0:
-                    cout << "World pos. " << location << ": ";
-                    ++location;
-                    cout << "Mario #" << id << " is walking. ";
-                    cout << "Coins: " << coins;
-                    cout << " |";
-                    cout << endl;
-                    break;
-                case 1:
-                    cout << "World pos. " << location << ": ";
-                    ++location;
-                    ++coins;
-                    cout << "Mario #" << id << " jumped and grabbed a coin. ";
-                    cout << "Coins: " << coins;
-                    cout << " |";
-                    cout << endl;
-                    break;
+                    switch (it->first)
+                    {
+                    case 0:
+                        if (id == chosenid)
+                        {
+                            cout << "World pos. " << location << ": ";
+                            cout << "Mario #" << id << " didn't jump and left a coin. ";
+                            cout << "Coins: " << coins;
+                            printInfo();
+                        }
+                        break;
+                    case 1:
+
+                        ++coins;
+                        world.removeBlockEement(location, "Coin");
+                        if (id == chosenid)
+                        {
+                            cout << "World pos. " << location << ": ";
+                            cout << "Mario #" << id << " jumped and grabbed a coin. ";
+                            cout << "Coins: " << coins;
+                            printInfo();
+                        }
+                        break;
+                    }
                 }
-            }
-            if (it->second == "Hole")
-            {
-                switch (it->first)
+                if (it->second == "Hole")
                 {
-                case 0:
-                    cout << "World pos. " << location << ": ";
-                    isActive = false;
-                    cout << "Mario #" << id << " didn't jump and fell to his death. " << endl;
-                    break;
-                case 1:
-                    cout << "World pos. " << location << ": ";
-                    ++location;
-                    cout << "Mario #" << id << " jumped and kept walking. ";
-                    cout << "Coins: " << coins;
-                    cout << " |";
-                    cout << endl;
-                    break;
+                    switch (it->first)
+                    {
+                    case 0:
+                        isActive = false;
+                        if (id == chosenid)
+                        {
+                            cout << "World pos. " << location << ": ";
+                            cout << "Mario #" << id << " didn't jump and fell to his death. " << endl;
+                        }
+                        break;
+                    case 1:
+                        if (id == chosenid)
+                        {
+                            cout << "World pos. " << location << ": ";
+                            cout << "Mario #" << id << " jumped and kept walking. ";
+                            cout << "Coins: " << coins;
+                            printInfo();
+                        }
+                        break;
+                    }
                 }
-            }
-            if (it->second == "Little Goomba")
-            {
-                switch (it->first)
+                if (it->second == "Little Goomba")
                 {
-                case 0:
-                    isActive = false;
-                    cout << "World pos. " << location << ": ";
-                    cout << "Mario #" << id << " didn't jump and was killed by a little goomba. " << endl;
-                    break;
-                case 1:
-                    cout << "World pos. " << location << ": ";
-                    ++location;
-                    cout << "Mario #" << id << " jumped and avoided the little goomba. ";
-                    cout << "Coins: " << coins;
-                    cout << " |";
-                    cout << endl;
-                    break;
-                case 2:
-                    cout << "World pos. " << location << ": ";
-                    world.removeBlockEement(location, "Little Goomba");
-                    ++location;
-                    cout << "Mario #" << id << " jumped and killed the little goomba. ";
-                    cout << "Coins: " << coins;
-                    cout << " |";
-                    cout << endl;
-                    break;
+                    switch (it->first)
+                    {
+                    case 0:
+                        if (id == chosenid)
+                        {
+                            cout << "World pos. " << location << ": ";
+                            cout << "Mario #" << id << " didn't jump and was killed by a little goomba. " << endl;
+                        }
+                        isActive = false;
+                        break;
+                    case 1:
+                        if (id == chosenid)
+                        {
+                            cout << "World pos. " << location << ": ";
+                            cout << "Mario #" << id << " jumped and avoided the little goomba. ";
+                            cout << "Coins: " << coins;
+                            printInfo();
+                        }
+                        break;
+                    case 2:
+                        world.removeBlockEement(location, "Little Goomba");
+                        setAttack("Little Goomba");
+                        if (id == chosenid)
+                        {
+                            cout << "World pos. " << location << ": ";
+                            cout << "Mario #" << id << " jumped and killed the little goomba. ";
+                            cout << "Coins: " << coins;
+                            printInfo();
+                        }
+                        break;
+                    }
                 }
-            }
-            if (it->second == "Koopa Troopa")
-            {
-                switch (it->first)
+                if (it->second == "Koopa Troopa")
                 {
-                case 0:
-                    isActive = false;
-                    cout << "World pos. " << location << ": ";
-                    cout << "Mario #" << id << " didn't jump and was killed by a koopa troopa. " << endl;
-                    break;
-                case 1:
-                    ++location;
-                    cout << "World pos. " << location << ": ";
-                    cout << "Mario #" << id << " jumped and avoided the koopa troopa. ";
-                    cout << "Coins: " << coins;
-                    cout << " |";
-                    cout << endl;
-                    break;
-                case 2:
-                    world.removeBlockEement(location, "Koopa Troopa");
-                    ++location;
-                    cout << "World pos. " << location << ": ";
-                    cout << "Mario #" << id << " jumped and killed the koopa troopa. ";
-                    cout << "Coins: " << coins;
-                    cout << " |";
-                    cout << endl;
-                    break;
+                    switch (it->first)
+                    {
+                    case 0:
+                        isActive = false;
+                        if (id == chosenid)
+                        {
+                            cout << "World pos. " << location << ": ";
+                            cout << "Mario #" << id << " didn't jump and was killed by a koopa troopa. " << endl;
+                        }
+                        break;
+                    case 1:
+                        if (id == chosenid)
+                        {
+                            cout << "World pos. " << location << ": ";
+                            cout << "Mario #" << id << " jumped and avoided the koopa troopa. ";
+                            cout << "Coins: " << coins;
+                            printInfo();
+                        }
+                        break;
+                    case 2:
+                        world.removeBlockEement(location, "Koopa Troopa");
+                        setAttack("Koopa Troopa");
+                        if (id == chosenid)
+                        {
+                            cout << "World pos. " << location << ": ";
+                            cout << "Mario #" << id << " jumped and killed the koopa troopa. ";
+                            cout << "Coins: " << coins;
+                            printInfo();
+                        }
+                        break;
+                    }
                 }
             }
         }
+        if (isActive)
+            ++location;
     }
 
-    void travelWorld()
+    //prints only walking info
+    void printWalkingInfo()
     {
-        while ((location != WORLD_SIZE && isActive == true) && location != 99)
-        {
-            if (getWorldBlock(location).empty())
-            {
-                cout << "World pos. " << location << ": ";
-                cout << "Mario #" << id << " is walking. ";
-                cout << "Coins: " << coins;
-                cout << " |";
-                cout << endl;
-                location++;
-            }
-            else
-            {
-                setEncounterResults(getEncounterOutcomes(getWorldBlock(location)));
-            }
-        }
-        if (isActive == true)
-        {
-            cout << "World pos. " << location << ": ";
-            cout << "Mario #" << id << " made it to the flag and won the game! Congratulations! ";
-            cout << "Total Coins: " << coins;
-            cout << " |";
-            cout << endl;
-        }
+        cout << "World pos. " << location << ": ";
+        cout << "Mario #" << id << " is walking. ";
+        cout << "Coins: " << coins;
     }
 
+    //prints info in case of flag encounter
+    void printFlagInfo()
+    {
+        cout << "World pos. " << location << ": ";
+        cout << "Mario #" << id << " made it to the flag! ";
+        cout << "Total Coins: " << coins;
+    }
+
+    //generates random probability
     bool calculateProbabilityResult(int probability)
     {
         return (rand() % 100) < probability;
     }
 
+    //recieves probability vectors and returns weighted probability
     int calculateEncounterResult(vector<double> probs)
     {
         int randomNumber = generateRandomInt(1, 100), upperLimit = 0;
@@ -262,24 +432,28 @@ public:
         return 0;
     }
 
+    //sets weighted probabilities in vector and sends them to method for processing
     int getCoinEncounterOutcome()
     {
         vector<double> probabilities = {0.5, 0.5};
         return calculateEncounterResult(probabilities);
     }
 
+    //sets weighted probabilities in vector and sends them to method for processing
     int getHoleEncounterOutcome()
     {
         vector<double> probabilities = {0.05, 0.95};
         return calculateEncounterResult(probabilities);
     }
 
+    //sets weighted probabilities in vector and sends them to method for processing
     int getLittleGoombaEncounterOutcome()
     {
         vector<double> probabilities = {0.05, 0.55, 0.40};
         return calculateEncounterResult(probabilities);
     }
 
+    //sets weighted probabilities in vector and sends them to method for processing
     int getKoopaTroopaEncounterOutcome()
     {
         vector<double> probabilities = {0.10, 0.53, 0.37};

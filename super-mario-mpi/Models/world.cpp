@@ -8,6 +8,7 @@ class World
     Entities world[WORLD_SIZE];
 
 public:
+    //constructor maps world consisting of string linked lists
     World()
     {
         world[8].addEntity("Coin");
@@ -43,16 +44,25 @@ public:
         world[99].addEntity("Flag");
     }
 
+    //gets elements in requested position or locations
     list<string> getBlockElements(int position)
     {
         return world[position].getEntities();
     }
 
+    //sends element to requested position
+    void addBlockElement(int position, string element)
+    {
+        world[position].addEntity(element);
+    }
+
+    //removes element from postion
     void removeBlockEement(int position, string element)
     {
         world[position].removeEntity(element);
     }
 
+    //method for testing world integrity
     void printWorld()
     {
         for (int i = 0; i < WORLD_SIZE; i++)
